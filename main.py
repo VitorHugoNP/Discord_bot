@@ -1,13 +1,9 @@
+from run import bot, run
 import random
-import discord
-from discord.ext import commands
-
-intents = discord.Intents.all()
-bot = commands.Bot(".", intents=intents)
 
 @bot.event
 async def on_ready():
-    print("Bot inicializado com sucesso")
+    print(f"Bot inicializado como {bot.user}")
     
 @bot.command()
 async def benzer(ctx):
@@ -27,7 +23,7 @@ async def roll(ctx, dice: str):
         limit = int(limit_str)
 
     except ValueError:
-        await ctx.send(f"Use o formato correto como: `.roll 2d6` ou `.roll 2#2d6`")
+        await ctx.send(f"Use o formato correto (EXEMPLO: `.roll 2d6` ou `.roll 2#2d6`)")
         return
 
     
@@ -38,7 +34,7 @@ async def roll(ctx, dice: str):
         
         for _ in range(rolls):
             roll = random.randint(1, limit)
-            ctx.send(f"Rolagem pura: {roll}\n")
+            await ctx.send(f"Rolagem pura: {roll}\n")
             pure_results.append(roll)
             if roll < limit * 0.25:
                 chance = random.randint(1, 2)
@@ -56,4 +52,5 @@ async def roll(ctx, dice: str):
                 f"|| {sub} <— Resultados Impuros: {pure_results} ||"
             )
 
-bot.run("MTQ1OTIxNjk3OTI3MjUzNjMxOQ.GyUi3X._UcpNWd_LNCBa77f4s4VMxwmoRTGTMJ44CHDM4")
+if __name__ == "__main__":
+    run()
