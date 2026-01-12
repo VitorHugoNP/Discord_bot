@@ -13,47 +13,46 @@ async def on_ready():
 async def benzer(ctx):
     await ctx.send("✝️ O CHAT TA BENZIDO! ✝️")
     
-        
 @bot.command()
 async def roll(ctx, dice: str, turns = 1):
     try:
-        rolls, limit = dice.lower().split("d")
-        rolls = int(rolls)
-        limit = int(limit)
-
-        if rolls > 100:
-            await ctx.send("Máximo de 100 dados por vez.")
-            return
+        turns, dice_part = dice.lower().split("#")
+        turns = int(turns)
+        
+        rolls_str, limit_str = dice_part.lower().split("d")
+        rolls = int(rolls_str)
+        limit = int(limit_str)
 
     except ValueError:
         await ctx.send(f"Use o formato correto: `{bot.intents}roll 2d6`")
         return
 
-    results = []
     
-    for _ in range(rolls):
-        roll = random.randint(1, limit)
+    await ctx.send(f"🎲 Rolagem: {dice}\n")
+    for turno in range(1, turns + 1):
+        results = []
+        pure_results = []
         
-        if roll < 10:
-            await ctx.send("o resultado foi algourado, benzendo... ")
-            chance = random.randint(1, 2)
-            if chance == 1:
-                roll = random.randint(1, limit)
-                await ctx.send("A benção foi dada 🛐")
-            else:
-                await ctx.send("Uma mágia maligna foi jogada sobre este dado... não foi possivel benzer 😭")
-        
-        results.append(roll)
+        for _ in range(rolls):
+            roll = random.randint(1, limit)
+            ctx.send(f"Rolagem pura: {roll}\n")
+            pure_results.append(roll)
+            if roll < limit * 0.25:
+                await ctx.send(" ✝️ O resultado foi algourado, benzendo... ✝️")
+                chance = random.randint(1, 2)
+                if chance == 1:
+                    await ctx.send(" 🛐 A benção foi dada 🛐")
+                    roll = random.randint(1, limit)
+                else:
+                    await ctx.send("‼️ Uma mágica Maligna foi jogada sobre este dado... Não foi possivel abençoa-la 😭")
+            results.append(roll)
     
-        
-        
-    
-    total = sum(results)
+        total = sum(results)
+        sub = sum(pure_results)
 
-    await ctx.send(
-        f"🎲 **Rolagem:** `{dice}`\n"
-        f"Resultados: {results}\n"
-        f"**Total:** {total}"
-    )
+        await ctx.send(
+                f" `{total}` <— Resultados: {results} \n" 
+                f"|| {sub} <— Resultados Impuros: {pure_results} ||"
+            )
 
 bot.run("MTQ1OTIxNjk3OTI3MjUzNjMxOQ.GyUi3X._UcpNWd_LNCBa77f4s4VMxwmoRTGTMJ44CHDM4")
