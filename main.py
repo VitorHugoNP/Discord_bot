@@ -38,10 +38,8 @@ async def roll(ctx, dice: str, turns = 1):
             ctx.send(f"Rolagem pura: {roll}\n")
             pure_results.append(roll)
             if roll < limit * 0.25:
-                await ctx.send(" ✝️ O resultado foi algourado, benzendo... ✝️")
                 chance = random.randint(1, 2)
                 if chance == 1:
-                    await ctx.send(" 🛐 A benção foi dada 🛐")
                     roll = random.randint(1, limit)
                 else:
                     await ctx.send("‼️ Uma mágica Maligna foi jogada sobre este dado... Não foi possivel abençoa-la 😭")
