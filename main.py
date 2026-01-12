@@ -15,15 +15,11 @@ async def benzer(ctx):
     
         
 @bot.command()
-async def roll(ctx, dice: str):
+async def roll(ctx, dice: str, turns = 1):
     try:
         rolls, limit = dice.lower().split("d")
         rolls = int(rolls)
         limit = int(limit)
-
-        if rolls <= 0 or limit <= 0:
-            await ctx.send("Os números devem ser maiores que zero.")
-            return
 
         if rolls > 100:
             await ctx.send("Máximo de 100 dados por vez.")
@@ -43,8 +39,9 @@ async def roll(ctx, dice: str):
             chance = random.randint(1, 2)
             if chance == 1:
                 roll = random.randint(1, limit)
-            await ctx.send("Uma mágia maligna foi jogada sobre este dado... não foi possivel benzer 😭")
-            
+                await ctx.send("A benção foi dada 🛐")
+            else:
+                await ctx.send("Uma mágia maligna foi jogada sobre este dado... não foi possivel benzer 😭")
         
         results.append(roll)
     
