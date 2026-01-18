@@ -1,5 +1,10 @@
+import discord
+from discord.ext import commands
 from run import bot, run
 import random
+
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix=".", intents=intents)
 
 @bot.event
 async def on_ready():
@@ -8,6 +13,12 @@ async def on_ready():
 @bot.command()
 async def benzer(ctx):
     await ctx.send("✝️ O CHAT TA BENZIDO! ✝️")
+    
+@bot.command()
+async def patpat(ctx, member: discord.Member):
+    nickname = member.display_name
+    await ctx.send(f"{nickname} recebeu carinho")
+    await ctx.send("https://i.pinimg.com/originals/08/de/7a/08de7ad3dcac4e10d27b2c203841a99f.gif")
     
 @bot.command()
 async def roll(ctx, dice: str):
@@ -52,5 +63,7 @@ async def roll(ctx, dice: str):
                 f"|| {sub} <— Resultados Impuros: {pure_results} ||"
             )
 
-if __name__ == "__main__":
-    run()
+bot.run("MTQ1OTIxNjk3OTI3MjUzNjMxOQ.GJIy73.pBGZOUN5NU_bkJXPnoFKe4YyclCSwWTH4Nb-lE")
+
+# if __name__ == "__main__":
+#     run()
