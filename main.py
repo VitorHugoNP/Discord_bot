@@ -6,6 +6,10 @@ import random
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=".", intents=intents)
 
+patpatgif = [
+    "https://i.pinimg.com/originals/08/de/7a/08de7ad3dcac4e10d27b2c203841a99f.gif", "https://tenor.com/view/good-boy-pat-on-head-stitch-gif-6929366788372516752", "https://tenor.com/view/cat-black-cute-pat-pat-gif-15490955286723955595", "https://tenor.com/view/pat-garrys-mod-garrys-mod-physics-fast-intense-gif-26322619", "https://tenor.com/view/apothecary-diaries-maomao-xiaolan-pat-pat-good-girl-gif-13334045917351786597"
+]
+
 @bot.event
 async def on_ready():
     print(f"Bot inicializado como {bot.user}")
@@ -17,8 +21,8 @@ async def benzer(ctx):
 @bot.command()
 async def patpat(ctx, member: discord.Member):
     nickname = member.display_name
-    await ctx.send(f"{nickname} recebeu carinho")
-    await ctx.send("https://i.pinimg.com/originals/08/de/7a/08de7ad3dcac4e10d27b2c203841a99f.gif")
+    await ctx.send(f"{nickname} recebeu carinho❤️")
+    await ctx.send(patpatgif[random.randint(0, 4)])
     
 @bot.command()
 async def roll(ctx, dice: str):
