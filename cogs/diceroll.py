@@ -5,42 +5,52 @@ from discord.ext import commands
 
 class Diceroll(commands.Cog):
     def __init__(self, bot):
-        super().__init__()
         self.bot = bot
-        
+        super().__init__()
+
     @commands.command()
     async def roll(self, ctx, dice: str):
         try:
-            dice = dice.lower()
+            dice = dice.lower().strip()
 
-            # Turnos
             if "#" in dice:
-                turns_part, dice_part = dice.split("#")
-                turns = int(turns_part)
+                turns_part, expr = dice.split("#", 1)
+                turns = int(turns_part) if turns_part else 1
             else:
-                dice_part = dice
                 turns = 1
+                expr = dice
 
-            # Bônus
-            if "+" in dice_part:
-                dice_core, bonus_part = dice_part.split("+")
-                bonus = int(bonus_part)
-            else:
-                dice_core = dice_part
-                bonus = 0
+            expr = expr.replace(" ", "")
 
-            # Dados
-            rolls_str, limit_str = dice_core.split("d")
-            rolls = int(rolls_str)
-            limit = int(limit_str)
+            rolls_list = []
+            
+            bonus = 0
+            parts = expr.split("+")
+
+            for part in parts:
+                if not part:
+                    continue
+
+                if "d" in part:
+                    rolls_str, limit_str = part.split("d", 1)
+                    rolls = int(rolls_str) if rolls_str else 1
+                    limit = int(limit_str)
+                    rolls_list.append((rolls, limit))
+                else:
+                    bonus += int(part)
+
+            if not rolls_list:
+                raise ValueError
 
         except ValueError:
             await ctx.send(
-                "Use o formato correto:\n"
-                "`.roll 2d6`\n"
-                "`.roll 2d6+3`\n"
-                "`.roll 2#2d6`\n"
-                "`.roll 2#2d6+5`"
+                "Formato inválido.\n"
+                "Exemplos válidos:\n"
+                "`1d20`\n"
+                "`2#1d20`\n"
+                "`1d20+3`\n"
+                "`2#1d20+3`\n"
+                "`1d20+3+12d6`"
             )
             return
 
@@ -49,32 +59,39 @@ class Diceroll(commands.Cog):
         for turno in range(1, turns + 1):
             results = []
             pure_results = []
+            results_display = []
 
-            for _ in range(rolls):
-                roll = random.randint(1, limit)
-                pure_results.append(roll)
+            for rolls, limit in rolls_list:
+                for _ in range(rolls):
+                    roll = random.randint(1, limit)
+                    pure_results.append(roll)
 
-                # Mecânica dos 25%
-                if roll < limit * 0.25:
-                    chance = random.randint(1, 2)
-                    if chance == 1:
-                        roll = random.randint(1, limit)
-                    else:
-                        await ctx.send(
-                            "*‼️ Uma mágica Maligna foi jogada sobre este dado... "
-                            "Não foi possivel abençoá-la 😭*"
-                        )
+                    if roll < limit * 0.25:
+                        if random.randint(1, 2) == 1:
+                            roll = random.randint(1, limit)
+                        else:
+                            await ctx.send(
+                                "*‼️ Um forte mau ágouro foi jogada sobre este dado . . . ‼️*"
+                            )
 
-                results.append(roll)
+                    results.append(roll)
+                    
+                if roll == limit:
+                    results_display.append(f"**{roll}**")
+                else:
+                    results_display.append(str(roll))
 
             total = sum(results) + bonus
             sub = sum(pure_results) + bonus
 
             bonus_text = f" + {bonus}" if bonus > 0 else ""
+
             await ctx.send(
-                f" `{total}` <— Resultados: {results} {bonus_text}\n" 
-                f"|| {sub} <— Resultados Impuros: {pure_results} {bonus_text}||"
+                f"**Turno {turno}:** `{total}`\n"
+                f"Resultados: {results}{bonus_text}\n"
+                f"||Impuro: {sub} → {pure_results}{bonus_text}||"
             )
+
 
 async def setup(bot):
     await bot.add_cog(Diceroll(bot))

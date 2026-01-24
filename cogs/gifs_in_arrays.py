@@ -34,6 +34,15 @@ class Gifs_in_arrays(commands.Cog):
             "https://tenor.com/view/hd-triste-sad-umaru-chan-gif-12703663354090997997",
             "https://tenor.com/view/anime-cry-crying-crying-girl-marin-kitagawa-my-dress-up-darling-gif-1018184038746649636"
         ]
+        
+        self.punchgif = [
+            "https://tenor.com/view/weliton-amogos-arzkeir-jujutsu-kaisen-panda-gif-20161414",
+            "https://tenor.com/view/jujutsu-kaisen-nanami-kento-kento-friday-gif-27058744",
+            "https://tenor.com/view/makima-maki-chs-chainsaw-man-reze-gif-2127323234004152026",
+            "https://tenor.com/view/naoya-zenin-choso-fight-aura-farm-not-in-the-manga-gif-15215466617984430840",
+            "https://tenor.com/view/naoya-zenin-punching-combo-fast-assault-gif-10811434377792099967",
+            "https://tenor.com/view/jujutsu-kaisen-jjk-maki-maki-jjk-maki-zenin-gif-8736688734787472408"
+        ]
 
     @commands.command()
     async def patpat(self, ctx, member: discord.Member):
@@ -52,6 +61,17 @@ class Gifs_in_arrays(commands.Cog):
         if nickname != "Benzoe":
             await ctx.send(f"{nickname} caiu em uma terrivel maldição 💀")
             await ctx.send(random.choice(self.pragagif))
+        else:
+            await ctx.send("perdão mestre 🥺")
+            await ctx.send(random.choice(self.botsadreact))
+        
+    @commands.command()
+    async def punch(self, ctx, member: discord.Member):
+        nickname = member.display_name
+        
+        if nickname != "Benzoe":
+            await ctx.send(f"{nickname} foi esmurrado sem dó")
+            await ctx.send(random.choice(self.punchgif))
         else:
             await ctx.send("perdão mestre 🥺")
             await ctx.send(random.choice(self.botsadreact))
