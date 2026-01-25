@@ -70,7 +70,7 @@ class Gifs_in_arrays(commands.Cog):
         nickname = member.display_name
         
         if nickname != "Benzoe":
-            await ctx.send(f"{nickname} foi esmurrado sem dó")
+            await ctx.send(f"{nickname} tomou uma coça pesada")
             await ctx.send(random.choice(self.punchgif))
         else:
             await ctx.send("perdão mestre 🥺")

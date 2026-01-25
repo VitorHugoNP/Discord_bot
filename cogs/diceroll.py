@@ -56,11 +56,11 @@ class Diceroll(commands.Cog):
 
         await ctx.send(f"🎲 **Rolagem:** `{dice}`")
 
+        fail = False
         for turno in range(1, turns + 1):
             results = []
             pure_results = []
             results_display = []
-            fail = False
 
             for rolls, limit in rolls_list:
                 for _ in range(rolls):
@@ -70,6 +70,7 @@ class Diceroll(commands.Cog):
                     if roll < limit * 0.25:
                         if random.randint(1, 2) == 1:
                             roll = random.randint(1, limit)
+                            fail = False
                         else:
                             fail = True
 
@@ -91,7 +92,8 @@ class Diceroll(commands.Cog):
                 f"Resultados: {results}{bonus_text}\n"
                 f"||Impuro: {sub} → {pure_results}{bonus_text}||"
             )
-        if fail == False:
+            
+        if fail == True:
             await ctx.send("*‼️ Um forte mau ágouro foi jogado sobre um ou mais dados . . . ‼️*")
 
 async def setup(bot):
