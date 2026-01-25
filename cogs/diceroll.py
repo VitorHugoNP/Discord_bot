@@ -60,6 +60,7 @@ class Diceroll(commands.Cog):
             results = []
             pure_results = []
             results_display = []
+            fail = False
 
             for rolls, limit in rolls_list:
                 for _ in range(rolls):
@@ -70,12 +71,11 @@ class Diceroll(commands.Cog):
                         if random.randint(1, 2) == 1:
                             roll = random.randint(1, limit)
                         else:
-                            await ctx.send(
-                                "*‼️ Um forte mau ágouro foi jogada sobre este dado . . . ‼️*"
-                            )
+                            fail = True
 
                     results.append(roll)
-                    
+                
+                
                 if roll == limit:
                     results_display.append(f"**{roll}**")
                 else:
@@ -91,7 +91,8 @@ class Diceroll(commands.Cog):
                 f"Resultados: {results}{bonus_text}\n"
                 f"||Impuro: {sub} → {pure_results}{bonus_text}||"
             )
-
+        if fail == False:
+            await ctx.send("*‼️ Um forte mau ágouro foi jogado sobre um ou mais dados . . . ‼️*")
 
 async def setup(bot):
     await bot.add_cog(Diceroll(bot))
