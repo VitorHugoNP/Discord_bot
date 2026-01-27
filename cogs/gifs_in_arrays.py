@@ -125,6 +125,14 @@ class Gifs_in_arrays(commands.Cog):
         else:
             await ctx.send("perdão mestre 🥺")
             await ctx.send(random.choice(self.botsadreact))
+            
+    @commands.command()
+    async def poder(self, ctx):
+        pode_ = random.randint(1,2)
+        if pode_ == 1:
+            await ctx.send("Pode")
+        else:
+            await ctx.send("Não Pode")
         
 async def setup(bot):
     await bot.add_cog(Gifs_in_arrays(bot))
