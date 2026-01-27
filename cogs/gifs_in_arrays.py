@@ -61,13 +61,18 @@ class Gifs_in_arrays(commands.Cog):
             "https://tenor.com/view/gyats-gif-13226811450218957859",
             "https://tenor.com/eANBklKLzNv.gif",
             "https://tenor.com/f576zV9tZd.gif",
-            "https://tenor.com/view/yuimetal-gif-2236335851178412850"
+            "https://tenor.com/view/yuimetal-gif-2236335851178412850",
+            "https://tenor.com/view/burak-gif-4153398623157332309",
+            "https://tenor.com/view/joker-joker-laugh-joker-laughing-joker-meme-gif-70796100678697647"
         ]
 
         self.botsadreact = [
             "https://tenor.com/view/bocchi-the-rock-anime-sad-gif-27615865",
             "https://tenor.com/view/hd-triste-sad-umaru-chan-gif-12703663354090997997",
-            "https://tenor.com/view/anime-cry-crying-crying-girl-marin-kitagawa-my-dress-up-darling-gif-1018184038746649636"
+            "https://tenor.com/view/anime-cry-crying-crying-girl-marin-kitagawa-my-dress-up-darling-gif-1018184038746649636",
+            "https://tenor.com/view/crying-girl-anime-gif-1148332258033326155",
+            "https://tenor.com/view/pokemon-pikachu-upset-sad-anime-gif-22961752",
+            "https://tenor.com/view/anime-gif-1029519612558471852"
         ]
         
         self.punchgif = [
