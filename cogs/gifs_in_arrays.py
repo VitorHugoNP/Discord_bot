@@ -102,7 +102,7 @@ class Gifs_in_arrays(commands.Cog):
             await ctx.send(f"{nickname} recebeu carinho ❤️")
             await ctx.send(random.choice(self.patpatgif))
         else:
-            await ctx.send("owwwn brigado :3")
+            await ctx.send("owwwn brigado ☆*: .｡. o(≧▽≦)o .｡.:*☆")
             await ctx.send(random.choice(self.patpatgif))
     
     @commands.command()

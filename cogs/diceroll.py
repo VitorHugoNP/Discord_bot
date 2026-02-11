@@ -26,7 +26,7 @@ class Diceroll(commands.Cog):
             
             bonus = 0
             parts = expr.split("+")
-
+            
             for part in parts:
                 if not part:
                     continue
@@ -67,7 +67,7 @@ class Diceroll(commands.Cog):
                     roll = random.randint(1, limit)
                     pure_results.append(roll)
 
-                    if roll < limit * 0.25:
+                    if roll <= limit * 0.25:
                         if random.randint(1, 2) == 1:
                             roll = random.randint(1, limit)
                             fail = False

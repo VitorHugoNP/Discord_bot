@@ -16,6 +16,7 @@ async def on_ready():
     await bot.tree.sync()
     print(f"Bot inicializado como {bot.user}")
 
+
 @bot.command()
 async def benzer(ctx):
     await ctx.send("✝️ O CHAT TA BENZIDO! ✝️")
