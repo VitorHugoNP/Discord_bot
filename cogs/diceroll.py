@@ -1,12 +1,16 @@
 import discord
 import random
-from discord import app_commands
+from concurrent.futures import ThreadPoolExecutor
 from discord.ext import commands
+import asyncio
+
+MAX_WORKERS = 10  # 🔥 limite de threads
+MAX_TURNS = 100   # 🔥 proteção contra flood
 
 class Diceroll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        super().__init__()
+        self.executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
     @commands.command()
     async def roll(self, ctx, *, dice: str):
@@ -14,7 +18,6 @@ class Diceroll(commands.Cog):
         try:
             dice = dice.lower().strip()
 
-            # -------- turnos --------
             if "#" in dice:
                 turns_part, expr = dice.split("#", 1)
                 turns = int(turns_part) if turns_part else 1
@@ -22,28 +25,26 @@ class Diceroll(commands.Cog):
                 turns = 1
                 expr = dice
 
+            # 🔥 proteção contra flood
+            if turns > MAX_TURNS:
+                await ctx.send(f"⚠️ Máximo de turnos permitido: {MAX_TURNS}")
+                return
+
             expr = expr.replace(" ", "")
-
-            # 🔥 TRUQUE PRA SUPORTAR "-"
             expr = expr.replace("-", "+-")
-
             parts = expr.split("+")
 
             rolls_list = []
             bonus = 0
 
-            # -------- parsing --------
             for part in parts:
 
                 if not part:
                     continue
 
-                # dado
                 if "d" in part:
-
                     rolls_str, limit_str = part.split("d", 1)
 
-                    # suporta d20 == 1d20
                     if rolls_str in ("", "+"):
                         rolls = 1
                     elif rolls_str == "-":
@@ -58,7 +59,6 @@ class Diceroll(commands.Cog):
 
                     rolls_list.append((rolls, limit))
 
-                # bonus numerico
                 else:
                     bonus += int(part)
 
@@ -66,47 +66,36 @@ class Diceroll(commands.Cog):
                 raise ValueError
 
         except:
-            await ctx.send(
-                "Formato inválido.\n"
-                "Exemplos válidos:\n"
-                "`1d20`\n"
-                "`2#1d20`\n"
-                "`1d20+3`\n"
-                "`1d20-2`\n"
-                "`2#1d20+3-1+2d6`"
-            )
+            await ctx.send("Formato inválido.")
             return
-
-        # -------- execução --------
 
         await ctx.send(f"🎲 **Rolagem:** `{dice}`")
 
         global_fail = False
 
-        for turno in range(1, turns + 1):
+        # 🔧 função que roda na thread
+        def roll_turn(turno):
+            nonlocal global_fail
 
             results = []
             pure_results = []
             display = []
+            local_fail = False
 
             for rolls, limit in rolls_list:
-
                 for _ in range(rolls):
-
                     roll = random.randint(1, limit)
                     pure = roll
 
-                    # sua regra de mau ágouro
                     if roll <= limit * 0.25:
                         if random.randint(1, 2) == 1:
                             roll = random.randint(1, limit)
                         else:
-                            global_fail = True
+                            local_fail = True
 
                     pure_results.append(pure)
                     results.append(roll)
 
-                    # destaque crítico
                     if roll == limit:
                         display.append(f"**{roll}**")
                     else:
@@ -115,21 +104,37 @@ class Diceroll(commands.Cog):
             total = sum(results) + bonus
             sub = sum(pure_results) + bonus
 
-            bonus_text = ""
+            return {
+                "turno": turno,
+                "text": (
+                    f"**Turno {turno}:** `{total}`\n"
+                    f"Resultados: [{', '.join(display)}]\n"
+                    f"||Impuro: {sub} → {pure_results}||"
+                ),
+                "fail": local_fail
+            }
 
-            if bonus > 0:
-                bonus_text = f" + {bonus}"
-            elif bonus < 0:
-                bonus_text = f" - {abs(bonus)}"
+        loop = asyncio.get_running_loop()
 
-            await ctx.send(
-                f"**Turno {turno}:** `{total}`\n"
-                f"Resultados: [{', '.join(display)}]{bonus_text}\n"
-                f"||Impuro: {sub} → {pure_results}{bonus_text}||"
-            )
+        # 🔥 executa no pool de threads (controlado)
+        tasks = [
+            loop.run_in_executor(self.executor, roll_turn, turno)
+            for turno in range(1, turns + 1)
+        ]
+
+        results = await asyncio.gather(*tasks)
+
+        # 📤 envio ordenado
+        results.sort(key=lambda x: x["turno"])
+
+        for r in results:
+            if r["fail"]:
+                global_fail = True
+            await ctx.send(r["text"])
 
         if global_fail:
-            await ctx.send("*‼️ Um forte mau ágouro foi jogado sobre um ou mais dados . . . ‼️*")
+            await ctx.send("*‼️ Mau ágouro ocorreu... ‼️*")
+
 
 async def setup(bot):
     await bot.add_cog(Diceroll(bot))
