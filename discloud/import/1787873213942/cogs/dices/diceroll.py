@@ -4,9 +4,8 @@ from concurrent.futures import ThreadPoolExecutor
 from discord.ext import commands
 import asyncio
 
-MAX_WORKERS = 10
-MAX_TURNS = 100
-MAX_ROLLS = 200
+MAX_WORKERS = 10  # 🔥 limite de threads
+MAX_TURNS = 100   # 🔥 proteção contra flood
 
 class Diceroll(commands.Cog):
     def __init__(self, bot):
@@ -58,10 +57,7 @@ class Diceroll(commands.Cog):
                     if rolls < 0:
                         raise ValueError
 
-                    if rolls > MAX_ROLLS:
-                        await ctx.send("⚠️ Máximo de rolagens permitidas: 200")
-                    else:
-                        rolls_list.append((rolls, limit))
+                    rolls_list.append((rolls, limit))
 
                 else:
                     bonus += int(part)
@@ -70,6 +66,7 @@ class Diceroll(commands.Cog):
                 raise ValueError
 
         except:
+            await ctx.send("Formato inválido.")
             return
 
         await ctx.send(f"🎲 **Rolagem:** `{dice}`")
@@ -137,6 +134,7 @@ class Diceroll(commands.Cog):
 
         if global_fail:
             await ctx.send("*‼️ Mau ágouro ocorreu... ‼️*")
+
 
 async def setup(bot):
     await bot.add_cog(Diceroll(bot))

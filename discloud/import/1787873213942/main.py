@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).parent
 COGS_DIR = BASE_DIR / "cogs"
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix=",", intents=intents)
+bot = commands.Bot(command_prefix=".", intents=intents)
 
 async def load_cogs():
     for arquivo in COGS_DIR.rglob("*.py"):
@@ -26,6 +26,7 @@ async def on_ready():
     await load_cogs()
     await bot.tree.sync()
     print(f"Bot inicializado como {bot.user}")
+
 
 @bot.command()
 async def benzer(ctx):
