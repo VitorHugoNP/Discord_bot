@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).parent
 COGS_DIR = BASE_DIR / "cogs"
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix=",", intents=intents)
+bot = commands.Bot(command_prefix=".", intents=intents)
 
 async def load_cogs():
     for arquivo in COGS_DIR.rglob("*.py"):
