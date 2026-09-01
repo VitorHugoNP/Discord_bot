@@ -1,0 +1,9 @@
+/events.py
+
+/.vscode/
+__pycache__/
+*.pyc
+
+.env
+discloud.config
+requirements.txt
